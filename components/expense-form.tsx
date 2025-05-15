@@ -30,8 +30,8 @@ interface ExpenseFormProps {
 
 export default function ExpenseForm({ onClose, editExpense }: ExpenseFormProps) {
   const [date, setDate] = useState<Date>(editExpense ? new Date(editExpense.date) : new Date())
-  const [amount, setAmount] = useState<string>(editExpense ? editExpense.amount.toString() : "")
-  const [category, setCategory] = useState<string>(editExpense ? editExpense.category : "")
+  const [amount, setAmount] = useState<string>(editExpense ? editExpense.amount.toString() : "0")
+  const [category, setCategory] = useState<string>(editExpense ? editExpense.category : "Thực phẩm")
   const [description, setDescription] = useState<string>(editExpense ? editExpense.description : "")
   const [paymentMethod, setPaymentMethod] = useState<string>(editExpense ? editExpense.paymentMethod : "Tiền mặt")
   const [type, setType] = useState<string>(editExpense ? editExpense.type : "expense")

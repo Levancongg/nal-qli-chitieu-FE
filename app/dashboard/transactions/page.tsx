@@ -82,7 +82,13 @@ export default function TransactionsPage() {
   }
 
   // Get unique categories for filter
-  const categories = Array.from(new Set(transactions.map((t) => t.category)))
+  const categories = Array.from(
+    new Set(
+      transactions
+        .map((t) => t.category)
+        .filter((category): category is string => Boolean(category) && category.trim() !== "")
+    )
+  )
 
   const handleEditExpense = (expense: any) => {
     setEditingExpense(expense)
