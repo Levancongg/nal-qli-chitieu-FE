@@ -8,6 +8,7 @@ import { usePathname, useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { BarChart3, Calendar, CreditCard, Home, LogOut, Menu, PieChart, Settings, User, Wallet, X } from "lucide-react"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
+import { useAuth } from "@/hooks/useAuth"
 
 interface DashboardLayoutProps {
   children: React.ReactNode
@@ -18,6 +19,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
   const router = useRouter()
   const [isClient, setIsClient] = useState(false)
   const [userName, setUserName] = useState("")
+  const { logout } = useAuth()
 
   useEffect(() => {
     setIsClient(true)
@@ -44,11 +46,14 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
     }
   }, [router])
 
-  const handleLogout = () => {
-    // Xóa thông tin người dùng
-    localStorage.removeItem("currentUser")
-    localStorage.removeItem("isLoggedIn")
-    router.push("/login")
+  const handleLogout = async () => {
+    try {
+      await logout()
+      router.push("/login")
+    } catch (error) {
+      console.error("Error during logout:", error)
+      router.push("/login")
+    }
   }
 
   const navigation = [

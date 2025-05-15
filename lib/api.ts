@@ -1,4 +1,5 @@
 import axios from 'axios';
+import Cookies from 'js-cookie';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
 
@@ -13,7 +14,6 @@ const api = axios.create({
 // Auth APIs
 export const authApi = {
   login: async (username: string, password: string) => {
-    console.log(username, password);
     
     const response = await api.post('/v1/auth/login', { username, password });
     return response.data;
@@ -25,7 +25,11 @@ export const authApi = {
   },
 
   logout: async () => {
-    const response = await api.post('/v1/auth/logout');
+    const refreshToken = Cookies.get('refreshToken');
+    
+    const response = await api.post('/v1/auth/logout', {
+      token: refreshToken
+    });
     return response.data;
   },
 

@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { authApi } from '@/lib/api';
+import Cookies from 'js-cookie';
 
 interface User {
   id: string;
@@ -39,10 +40,17 @@ export const useAuth = () => {
   const logout = async () => {
     try {
       await authApi.logout();
+      // Xóa token từ cookie
+      Cookies.remove('authToken');
+      Cookies.remove('refreshToken');
       setUser(null);
     } catch (err: any) {
+      console.error('Logout error:', err);
+      // Ngay cả khi có lỗi, vẫn xóa token và state
+      Cookies.remove('authToken');
+      Cookies.remove('refreshToken');
+      setUser(null);
       setError(err.response?.data?.message || 'Logout failed');
-      throw err;
     }
   };
 

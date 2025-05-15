@@ -32,11 +32,18 @@ export default function LoginPage() {
   
     try {
       const response = await login(username, password)
-      console.log(response, "response")
 
-      // Lưu access token vào cookie
+      // Lưu tokens vào cookie
       if (response.accessToken) {
         Cookies.set('authToken', response.accessToken, {
+          expires: 7, // Hết hạn sau 7 ngày
+          secure: process.env.NODE_ENV === 'production',
+          sameSite: 'strict'
+        })
+      }
+
+      if (response.refreshToken) {
+        Cookies.set('refreshToken', response.refreshToken, {
           expires: 7, // Hết hạn sau 7 ngày
           secure: process.env.NODE_ENV === 'production',
           sameSite: 'strict'

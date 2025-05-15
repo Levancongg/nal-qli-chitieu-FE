@@ -39,7 +39,6 @@ export const sendOTPEmail = async (email: string, otp: string): Promise<boolean>
 
     // Gửi email
     const info = await transporter.sendMail(mailOptions)
-    console.log("Email sent: ", info.response)
     return true
   } catch (error) {
     console.error("Error sending email: ", error)
