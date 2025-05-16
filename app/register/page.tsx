@@ -47,7 +47,7 @@ export default function RegisterPage() {
       }, 2000)
     } catch (err: any) {
       console.error("Registration error:", err)
-      setError(err.response?.data?.message || "Đăng ký thất bại. Vui lòng thử lại sau.")
+      setError(err.response?.data?.message || "Tài khoản đã tồn tại, vui lòng đăng nhập")
     } finally {
       setIsLoading(false)
     }

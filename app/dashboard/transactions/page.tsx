@@ -27,7 +27,7 @@ export default function TransactionsPage() {
   const [isClient, setIsClient] = useState(false)
   const [showExpenseForm, setShowExpenseForm] = useState(false)
   const [searchTerm, setSearchTerm] = useState("")
-  const [categoryFilter, setCategoryFilter] = useState("")
+  const [categoryFilter, setCategoryFilter] = useState("all")
   const [transactions, setTransactions] = useState<any[]>([])
   const [filteredTransactions, setFilteredTransactions] = useState<any[]>([])
   const [editingExpense, setEditingExpense] = useState<any>(null)
