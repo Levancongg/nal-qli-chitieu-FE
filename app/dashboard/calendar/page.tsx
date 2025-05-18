@@ -6,6 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Calendar } from "@/components/ui/calendar"
 import { Badge } from "@/components/ui/badge"
 import ExpenseForm from "@/components/expense-form"
+import type { DayPicker } from "react-day-picker"
 
 export default function CalendarPage() {
   const router = useRouter()
@@ -82,27 +83,34 @@ export default function CalendarPage() {
       .reduce((sum, expense) => sum + expense.amount, 0)
   }
 
+  const currentDate = date || new Date()
+
   return (
-    <div className="flex-1 space-y-4 p-4 md:p-8 pt-6">
-      <div className="flex items-center justify-between">
-        <h2 className="text-3xl font-bold tracking-tight">Lịch chi tiêu</h2>
+    <div className="flex-1 space-y-6 p-6 md:p-8 pt-6 max-w-7xl mx-auto">
+      <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+        <h2 className="text-3xl font-bold tracking-tight bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
+          Lịch chi tiêu
+        </h2>
+        <Badge variant="outline" className="text-lg px-4 py-2 border-primary/20 hover:bg-primary/5 transition-colors">
+          Tổng chi tiêu tháng: {getCurrentMonthTotal().toLocaleString()}đ
+        </Badge>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-2">
-        <Card className="col-span-1">
-          <CardHeader>
-            <CardTitle>
-              Lịch tháng {date?.getMonth() + 1}/{date?.getFullYear()}
+      <div className="grid gap-6 md:grid-cols-2">
+        <Card className="col-span-1 shadow-lg hover:shadow-xl transition-shadow">
+          <CardHeader className="border-b bg-muted/50">
+            <CardTitle className="text-xl">
+              Lịch tháng {currentDate.getMonth() + 1}/{currentDate.getFullYear()}
             </CardTitle>
           </CardHeader>
-          <CardContent>
+          <CardContent className="p-6 flex justify-center">
             <Calendar
               mode="single"
               selected={date}
               onSelect={setDate}
-              className="rounded-md border"
+              className="rounded-md border shadow-sm"
               modifiers={{
-                hasExpense: (date) => hasExpenseOnDay(date),
+                hasExpense: (date: Date) => hasExpenseOnDay(date),
               }}
               modifiersStyles={{
                 hasExpense: {
@@ -111,37 +119,31 @@ export default function CalendarPage() {
                   color: "hsl(var(--primary))",
                 },
               }}
-              components={{
-                DayContent: (props) => (
-                  <div className="relative h-9 w-9 p-0 flex items-center justify-center">
-                    <span>{props.day.day}</span>
-                    {hasExpenseOnDay(props.day.date) && (
-                      <div className="absolute bottom-1 left-0 right-0 flex justify-center">
-                        <div className="h-1 w-1 rounded-full bg-primary"></div>
-                      </div>
-                    )}
-                  </div>
-                ),
-              }}
             />
           </CardContent>
         </Card>
 
-        <Card className="col-span-1">
-          <CardHeader>
-            <CardTitle>
-              Chi tiết ngày {date?.getDate()}/{date?.getMonth() + 1}/{date?.getFullYear()}
+        <Card className="col-span-1 shadow-lg hover:shadow-xl transition-shadow">
+          <CardHeader className="border-b bg-muted/50">
+            <CardTitle className="text-xl">
+              Chi tiết ngày {currentDate.toLocaleDateString("vi-VN")}
             </CardTitle>
           </CardHeader>
-          <CardContent>
+          <CardContent className="p-6">
             {selectedDayExpenses.length > 0 ? (
               <div className="space-y-4">
                 {selectedDayExpenses.map((expense) => (
-                  <div key={expense.id} className="flex items-center justify-between border-b pb-2">
-                    <div>
+                  <div 
+                    key={expense.id} 
+                    className="flex items-center justify-between p-3 rounded-lg hover:bg-muted/50 transition-colors"
+                  >
+                    <div className="space-y-1">
                       <div className="font-medium flex items-center gap-2">
                         {expense.description || "Không có mô tả"}
-                        <Badge variant={expense.type === "income" ? "success" : "destructive"}>
+                        <Badge 
+                          variant={expense.type === "income" ? "success" : "destructive"}
+                          className="text-xs"
+                        >
                           {expense.type === "income" ? "Thu nhập" : "Chi tiêu"}
                         </Badge>
                       </div>
@@ -154,8 +156,7 @@ export default function CalendarPage() {
                   </div>
                 ))}
 
-                {/* Daily totals section */}
-                <div className="pt-4 space-y-2">
+                <div className="pt-4 space-y-3 bg-muted/30 p-4 rounded-lg">
                   <div className="flex justify-between text-sm">
                     <span className="font-medium">Tổng thu trong ngày:</span>
                     <span className="font-medium text-emerald-600">
@@ -179,7 +180,7 @@ export default function CalendarPage() {
                 </div>
               </div>
             ) : (
-              <div className="flex h-[200px] items-center justify-center text-muted-foreground">
+              <div className="flex h-[200px] items-center justify-center text-muted-foreground bg-muted/30 rounded-lg">
                 Không có giao dịch nào vào ngày này
               </div>
             )}
@@ -187,22 +188,22 @@ export default function CalendarPage() {
         </Card>
       </div>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Tổng quan tháng {date?.getMonth() + 1}</CardTitle>
+      <Card className="shadow-lg hover:shadow-xl transition-shadow">
+        <CardHeader className="border-b bg-muted/50">
+          <CardTitle className="text-xl">Tổng quan tháng {currentDate.getMonth() + 1}</CardTitle>
         </CardHeader>
-        <CardContent>
+        <CardContent className="p-6">
           <div className="space-y-4">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              <div className="bg-muted p-4 rounded-lg">
-                <div className="text-sm text-muted-foreground">Tổng thu nhập</div>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div className="bg-gradient-to-br from-emerald-50 to-emerald-100 dark:from-emerald-950 dark:to-emerald-900 p-6 rounded-xl shadow-sm hover:shadow-md transition-shadow">
+                <div className="text-sm text-muted-foreground mb-2">Tổng thu nhập</div>
                 <div className="text-2xl font-bold text-emerald-600">
                   {expenses
                     .filter((expense) => {
                       const expenseDate = new Date(expense.date)
                       return (
-                        expenseDate.getMonth() === (date?.getMonth() || new Date().getMonth()) &&
-                        expenseDate.getFullYear() === (date?.getFullYear() || new Date().getFullYear()) &&
+                        expenseDate.getMonth() === currentDate.getMonth() &&
+                        expenseDate.getFullYear() === currentDate.getFullYear() &&
                         expense.type === "income"
                       )
                     })
@@ -211,15 +212,15 @@ export default function CalendarPage() {
                   ₫
                 </div>
               </div>
-              <div className="bg-muted p-4 rounded-lg">
-                <div className="text-sm text-muted-foreground">Tổng chi tiêu</div>
+              <div className="bg-gradient-to-br from-red-50 to-red-100 dark:from-red-950 dark:to-red-900 p-6 rounded-xl shadow-sm hover:shadow-md transition-shadow">
+                <div className="text-sm text-muted-foreground mb-2">Tổng chi tiêu</div>
                 <div className="text-2xl font-bold text-red-600">
                   {expenses
                     .filter((expense) => {
                       const expenseDate = new Date(expense.date)
                       return (
-                        expenseDate.getMonth() === (date?.getMonth() || new Date().getMonth()) &&
-                        expenseDate.getFullYear() === (date?.getFullYear() || new Date().getFullYear()) &&
+                        expenseDate.getMonth() === currentDate.getMonth() &&
+                        expenseDate.getFullYear() === currentDate.getFullYear() &&
                         expense.type === "expense"
                       )
                     })
@@ -228,15 +229,15 @@ export default function CalendarPage() {
                   ₫
                 </div>
               </div>
-              <div className="bg-muted p-4 rounded-lg">
-                <div className="text-sm text-muted-foreground">Số giao dịch</div>
-                <div className="text-2xl font-bold">
+              <div className="bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-950 dark:to-blue-900 p-6 rounded-xl shadow-sm hover:shadow-md transition-shadow">
+                <div className="text-sm text-muted-foreground mb-2">Số giao dịch</div>
+                <div className="text-2xl font-bold text-blue-600">
                   {
                     expenses.filter((expense) => {
                       const expenseDate = new Date(expense.date)
                       return (
-                        expenseDate.getMonth() === (date?.getMonth() || new Date().getMonth()) &&
-                        expenseDate.getFullYear() === (date?.getFullYear() || new Date().getFullYear())
+                        expenseDate.getMonth() === currentDate.getMonth() &&
+                        expenseDate.getFullYear() === currentDate.getFullYear()
                       )
                     }).length
                   }
